@@ -1,5 +1,4 @@
-﻿
-// JHPTcpClientDlg.cpp: 实现文件
+﻿// JHPTcpClientDlg.cpp: 实现文件
 //
 
 #include "pch.h"
@@ -8,6 +7,9 @@
 #include "JHPTcpClientDlg.h"
 #include "afxdialogex.h"
 #include "JHPTcpClientArchitecture.h"
+#include "../SDK/Include/HPSocket/HPClientEvent.h"
+#include "../SDK/helper.h"
+#include "../SDK/Include/HPSocket/TcpClientSystem.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -15,7 +17,8 @@
 
 // CJHPTcpClientDlg 对话框
 
-
+const LPCTSTR ADDRESS = _T("127.0.0.1");
+const USHORT PORT = 5555;
 
 CJHPTcpClientDlg::CJHPTcpClientDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_JHPTCPCLIENT_DIALOG, pParent)
@@ -31,19 +34,21 @@ std::weak_ptr<JFramework::IArchitecture> CJHPTcpClientDlg::GetArchitecture() con
 void CJHPTcpClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-}
-
-void CJHPTcpClientDlg::OnEvent(std::shared_ptr<IEvent> event)
-{
-
+	DDX_Control(pDX, IDC_LIST_INFO, m_Info);
+	DDX_Control(pDX, IDC_BUTTON_START, m_Start);
+	DDX_Control(pDX, IDC_BUTTON_STOP, m_Stop);
+	DDX_Control(pDX, IDC_EDIT_CONTENT, m_Content);
 }
 
 BEGIN_MESSAGE_MAP(CJHPTcpClientDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_CLOSE()
+	ON_BN_CLICKED(IDC_BUTTON_START, &CJHPTcpClientDlg::OnBnClickedButtonStart)
+	ON_BN_CLICKED(IDC_BUTTON_STOP, &CJHPTcpClientDlg::OnBnClickedButtonStop)
+	ON_BN_CLICKED(IDC_BUTTON_SEND, &CJHPTcpClientDlg::OnBnClickedButtonSend)
 END_MESSAGE_MAP()
-
 
 // CJHPTcpClientDlg 消息处理程序
 
@@ -77,6 +82,18 @@ BOOL CJHPTcpClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+
+	this->RegisterEvent<HPClientPrepareConnectEvent>(this);
+	this->RegisterEvent<HPClientConnectEvent>(this);
+	this->RegisterEvent<HPClientHandShakeEvent>(this);
+	this->RegisterEvent<HPClientReceiveEvent>(this);
+	this->RegisterEvent<HPClientSendEvent>(this);
+	this->RegisterEvent<HPClientCloseEvent>(this);
+
+
+	::SetMainWnd(this);
+	::SetInfoList(&m_Info);
+	SetAppState(EnAppState::HP_STOPPED);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -122,3 +139,107 @@ HCURSOR CJHPTcpClientDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CJHPTcpClientDlg::OnClose()
+{
+	this->UnRegisterEvent<HPClientPrepareConnectEvent>(this);
+	this->UnRegisterEvent<HPClientConnectEvent>(this);
+	this->UnRegisterEvent<HPClientHandShakeEvent>(this);
+	this->UnRegisterEvent<HPClientReceiveEvent>(this);
+	this->UnRegisterEvent<HPClientSendEvent>(this);
+	this->UnRegisterEvent<HPClientCloseEvent>(this);
+
+	__super::OnClose();
+}
+
+void CJHPTcpClientDlg::OnEvent(std::shared_ptr<IEvent> event)
+{
+	if (auto e = std::dynamic_pointer_cast<HPClientPrepareConnectEvent>(event))
+	{
+
+	}
+	else if (auto e = std::dynamic_pointer_cast<HPClientConnectEvent>(event))
+	{
+		TCHAR szAddress[100];
+		int iAddressLen = sizeof(szAddress) / sizeof(TCHAR);
+		USHORT usPort;
+
+		e->m_pSender->GetLocalAddress(szAddress, iAddressLen, usPort);
+
+		::PostOnConnect(e->m_dwConnID, szAddress, usPort);
+		SetAppState(EnAppState::HP_STARTED);
+	}
+	else if (auto e = std::dynamic_pointer_cast<HPClientHandShakeEvent>(event))
+	{
+		::PostOnHandShake(e->m_dwConnID, L"");
+	}
+	else if (auto e = std::dynamic_pointer_cast<HPClientReceiveEvent>(event))
+	{
+		::PostOnReceive(e->m_dwConnID, e->m_pData, e->m_iLength);
+	}
+	else if (auto e = std::dynamic_pointer_cast<HPClientSendEvent>(event))
+	{
+		::PostOnSend(e->m_dwConnID, e->m_pData, e->m_iLength);
+	}
+	else if (auto e = std::dynamic_pointer_cast<HPClientCloseEvent>(event))
+	{
+		e->m_iErrorCode == SE_OK ? 
+			::PostOnClose(e->m_dwConnID) :
+			::PostOnError(e->m_dwConnID, e->m_enOperation, e->m_iErrorCode);
+
+		SetAppState(EnAppState::HP_STOPPED);
+	}
+}
+void CJHPTcpClientDlg::OnBnClickedButtonStart()
+{
+	SetAppState(EnAppState::HP_STARTING);
+
+
+	::LogClientStarting(ADDRESS, PORT);
+
+	auto tcpClientSystem = this->GetSystem<TcpClientSystem>();
+	if (!tcpClientSystem->Start(ADDRESS, PORT))
+	{
+		::LogClientStartFail(tcpClientSystem->m_client->GetLastError(),
+			tcpClientSystem->m_client->GetLastErrorDesc());
+		SetAppState(EnAppState::HP_STOPPED);
+	}
+	else
+	{
+		SetAppState(EnAppState::HP_STARTED);
+	}
+}
+
+void CJHPTcpClientDlg::OnBnClickedButtonStop()
+{
+	auto tcpClientSystem = this->GetSystem<TcpClientSystem>();
+	if (tcpClientSystem->Stop())
+	{
+		::LogClientStopping(tcpClientSystem->m_client->GetConnectionID());
+		SetAppState(EnAppState::HP_STOPPED);
+	}
+	else
+	{
+		ASSERT(FALSE);
+	}
+}
+
+void CJHPTcpClientDlg::SetAppState(EnAppState state)
+{
+	m_enState = state;
+	if (this->GetSafeHwnd() == nullptr)
+		return;
+	m_Start.EnableWindow(m_enState == EnAppState::HP_STOPPED);
+	m_Stop.EnableWindow(m_enState == EnAppState::HP_STARTED);
+}
+
+void CJHPTcpClientDlg::OnBnClickedButtonSend()
+{
+	CString strContent;
+	m_Content.GetWindowText(strContent);
+
+	auto tcpClientSystem = this->GetSystem<TcpClientSystem>();
+	if (tcpClientSystem->Send((LPBYTE)strContent.GetBuffer(), strContent.GetLength()))
+		::LogSend(tcpClientSystem->m_client->GetConnectionID(), strContent);
+	else
+		::LogSendFail(tcpClientSystem->m_client->GetConnectionID(), ::GetLastError(), ::HP_GetSocketErrorDesc(SE_DATA_SEND));
+}

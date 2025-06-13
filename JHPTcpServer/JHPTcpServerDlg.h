@@ -40,7 +40,7 @@ public:
     afx_msg void OnBnClickedButtonStart();
     afx_msg void OnClose();
     CButton m_Start;
-    CListBox m_ListBoxLog;
+    CListBox m_Info;
 protected:
     EnAppState m_enState;
     void SetAppState(EnAppState state);

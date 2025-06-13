@@ -44,9 +44,7 @@ public:
 
 	EnHandleResult OnPrepareConnect(ITcpClient* pSender, CONNID dwConnID, SOCKET socket) override;
 
-
 	EnHandleResult OnConnect(ITcpClient* pSender, CONNID dwConnID) override;
-
 
 	EnHandleResult OnHandShake(ITcpClient* pSender, CONNID dwConnID) override;
 
@@ -54,10 +52,9 @@ public:
 
 	EnHandleResult OnSend(ITcpClient* pSender, CONNID dwConnID, const BYTE* pData, int iLength) override;
 
-
 	EnHandleResult OnClose(ITcpClient* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode) override;
 
-private:
+public:
 	CTcpPackClientPtr m_client;          // HPSocket TCP客户端对象
 protected:
 	void OnInit() override;

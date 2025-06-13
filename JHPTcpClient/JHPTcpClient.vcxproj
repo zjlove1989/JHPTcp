@@ -191,6 +191,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\SDK\helper.h" />
     <ClInclude Include="..\SDK\Include\HPSocket\HPClientEvent.h" />
     <ClInclude Include="..\SDK\Include\HPSocket\HPSocket.h" />
     <ClInclude Include="..\SDK\Include\HPSocket\HPTypeDef.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\SDK\helper.cpp" />
     <ClCompile Include="..\SDK\Include\HPSocket\TcpClientSystem.cpp" />
     <ClCompile Include="JHPTcpClient.cpp" />
     <ClCompile Include="JHPTcpClientArchitecture.cpp" />

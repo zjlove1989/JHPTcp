@@ -4,6 +4,7 @@
 
 #pragma once
 #include "../SDK/JFramework.h"
+#include "../SDK/helper.h"
 
 using namespace JFramework;
 // CJHPTcpClientDlg 对话框
@@ -38,4 +39,17 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnClose();
+	afx_msg void OnBnClickedButtonStart();
+	afx_msg void OnBnClickedButtonStop();
+	CListBox m_Info;
+protected:
+	EnAppState m_enState;
+	void SetAppState(EnAppState state);
+public:
+	CButton m_Start;
+	CButton m_Stop;
+	afx_msg void OnBnClickedButtonSend();
+	CEdit m_Content;
 };

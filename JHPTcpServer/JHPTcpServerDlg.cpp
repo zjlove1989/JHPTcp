@@ -36,7 +36,7 @@ void CJHPTcpServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_START, m_Start);
-	DDX_Control(pDX, IDC_LIST_LOG, m_ListBoxLog);
+	DDX_Control(pDX, IDC_LIST_LOG, m_Info);
 	DDX_Control(pDX, IDC_BUTTON_STOP, m_Stop);
 }
 
@@ -89,7 +89,7 @@ BOOL CJHPTcpServerDlg::OnInitDialog()
 	this->RegisterEvent<HPServerShutdownEvent>(this);
 
 	::SetMainWnd(this);
-	::SetInfoList(&m_ListBoxLog);
+	::SetInfoList(&m_Info);
 	SetAppState(EnAppState::HP_STOPPED);
 
 	return TRUE; // 除非将焦点设置到控件，否则返回 TRUE
@@ -138,17 +138,18 @@ void CJHPTcpServerDlg::OnBnClickedButtonStart()
 {
 	SetAppState(EnAppState::HP_STARTING);
 
-	auto tcpServerSystem = this->GetSystem<TcpServerSystem>();
 
+	::LogServerStart(ADDRESS, PORT);
+
+	auto tcpServerSystem = this->GetSystem<TcpServerSystem>();
 	if (!tcpServerSystem->Start(ADDRESS, PORT))
 	{
-		::LogServerStartFail(tcpServerSystem->mServer->GetLastError(),
-			tcpServerSystem->mServer->GetLastErrorDesc());
+		::LogServerStartFail(tcpServerSystem->m_server->GetLastError(),
+			tcpServerSystem->m_server->GetLastErrorDesc());
 		SetAppState(EnAppState::HP_STOPPED);
 	}
 	else
 	{
-		::LogServerStart(ADDRESS, PORT);
 		SetAppState(EnAppState::HP_STARTED);
 	}
 }
@@ -220,6 +221,7 @@ void CJHPTcpServerDlg::OnEvent(std::shared_ptr<IEvent> event)
 	else if (auto e = std::dynamic_pointer_cast<HPServerReceiveEvent>(event))
 	{
 		::PostOnReceive(e->m_dwConnID, e->m_pData, e->m_iLength);
+		this->GetSystem<TcpServerSystem>()->Send(e->m_dwConnID, e->m_pData, e->m_iLength);
 	}
 	else if (auto e = std::dynamic_pointer_cast<HPServerCloseEvent>(event))
 	{

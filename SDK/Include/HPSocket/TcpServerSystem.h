@@ -48,5 +48,5 @@ public:
 
 public:
 	// HPSocket·şÎñÆ÷Ö¸Õë
-	CTcpPackServerPtr mServer;
+	CTcpPackServerPtr m_server;
 };

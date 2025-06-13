@@ -2,7 +2,7 @@
 #include "HPServerEvent.h"
 
 TcpServerSystem::TcpServerSystem()
-    : mServer(this)
+    : m_server(this)
 {
 }
 
@@ -16,13 +16,13 @@ void TcpServerSystem::OnEvent(std::shared_ptr<IEvent> event) { }
 
 bool TcpServerSystem::Start(const wchar_t* bindAddress, uint16_t port)
 {
-    return mServer->Start(bindAddress, port);
+    return m_server->Start(bindAddress, port);
 }
 
 bool TcpServerSystem::Stop()
 {
-    if (mServer->HasStarted()) {
-        return mServer->Stop();
+    if (m_server->HasStarted()) {
+        return m_server->Stop();
     }
 
     return true;
@@ -30,25 +30,25 @@ bool TcpServerSystem::Stop()
 
 bool TcpServerSystem::Send(HP_CONNID connId, const BYTE* data, int length)
 {
-    if (!mServer->HasStarted()) {
+    if (!m_server->HasStarted()) {
         return false;
     }
 
-    return mServer->Send(connId, data, length);
+    return m_server->Send(connId, data, length);
 }
 
 bool TcpServerSystem::Disconnect(HP_CONNID connId)
 {
-    if (!mServer->HasStarted()) {
+    if (!m_server->HasStarted()) {
         return false;
     }
 
-    return mServer->Disconnect(connId);
+    return m_server->Disconnect(connId);
 }
 
 uint32_t TcpServerSystem::GetConnectionCount() const
 {
-    return mServer->GetConnectionCount();
+    return m_server->GetConnectionCount();
 }
 
 EnHandleResult TcpServerSystem::OnPrepareListen(ITcpServer* pSender,

@@ -21,64 +21,64 @@
  * limitations under the License.
  */
 
-/******************************************************************************
-Module:  HPSocket
+ /******************************************************************************
+ Module:  HPSocket
 
-Usage:
-		方法一：
-		--------------------------------------------------------------------------------------
-		0. 应用程序包含 HPTypeDef.h / SocketInterface.h / HPSocket.h 头文件
-		1. 调用 HP_Create_Xxx() 函数创建 HPSocket 对象
-		2. 使用完毕后调用 HP_Destroy_Xxx() 函数销毁 HPSocket 对象
+ Usage:
+		 方法一：
+		 --------------------------------------------------------------------------------------
+		 0. 应用程序包含 HPTypeDef.h / SocketInterface.h / HPSocket.h 头文件
+		 1. 调用 HP_Create_Xxx() 函数创建 HPSocket 对象
+		 2. 使用完毕后调用 HP_Destroy_Xxx() 函数销毁 HPSocket 对象
 
-		方法二：
-		--------------------------------------------------------------------------------------
-		0. 应用程序包含 SocketInterface.h 和 HPSocket.h 头文件
-		1. 创建 CXxxPtr 智能指针，通过智能指针使用 HPSocket 对象
+		 方法二：
+		 --------------------------------------------------------------------------------------
+		 0. 应用程序包含 SocketInterface.h 和 HPSocket.h 头文件
+		 1. 创建 CXxxPtr 智能指针，通过智能指针使用 HPSocket 对象
 
-Release:
-		<-- 动态链接库 -->
-		1. x86/HPSocket.dll				- (32位/MBCS/Release)
-		2. x86/HPSocket_D.dll			- (32位/MBCS/DeBug)
-		3. x86/HPSocket_U.dll			- (32位/UNICODE/Release)
-		4. x86/HPSocket_UD.dll			- (32位/UNICODE/DeBug)
-		5. x64/HPSocket.dll				- (64位/MBCS/Release)
-		6. x64/HPSocket_D.dll			- (64位/MBCS/DeBug)
-		7. x64/HPSocket_U.dll			- (64位/UNICODE/Release)
-		8. x64/HPSocket_UD.dll			- (64位/UNICODE/DeBug)
+ Release:
+		 <-- 动态链接库 -->
+		 1. x86/HPSocket.dll				- (32位/MBCS/Release)
+		 2. x86/HPSocket_D.dll			- (32位/MBCS/DeBug)
+		 3. x86/HPSocket_U.dll			- (32位/UNICODE/Release)
+		 4. x86/HPSocket_UD.dll			- (32位/UNICODE/DeBug)
+		 5. x64/HPSocket.dll				- (64位/MBCS/Release)
+		 6. x64/HPSocket_D.dll			- (64位/MBCS/DeBug)
+		 7. x64/HPSocket_U.dll			- (64位/UNICODE/Release)
+		 8. x64/HPSocket_UD.dll			- (64位/UNICODE/DeBug)
 
-		<-- 静态链接库 -->
-		!!注意!!：使用 HPSocket 静态库时，需要在工程属性中定义预处理宏 -> HPSOCKET_STATIC_LIB
-		1. x86/static/HPSocket.lib		- (32位/MBCS/Release)
-		2. x86/static/HPSocket_D.lib	- (32位/MBCS/DeBug)
-		3. x86/static/HPSocket_U.lib	- (32位/UNICODE/Release)
-		4. x86/static/HPSocket_UD.lib	- (32位/UNICODE/DeBug)
-		5. x64/static/HPSocket.lib		- (64位/MBCS/Release)
-		6. x64/static/HPSocket_D.lib	- (64位/MBCS/DeBug)
-		7. x64/static/HPSocket_U.lib	- (64位/UNICODE/Release)
-		8. x64/static/HPSocket_UD.lib	- (64位/UNICODE/DeBug)
+		 <-- 静态链接库 -->
+		 !!注意!!：使用 HPSocket 静态库时，需要在工程属性中定义预处理宏 -> HPSOCKET_STATIC_LIB
+		 1. x86/static/HPSocket.lib		- (32位/MBCS/Release)
+		 2. x86/static/HPSocket_D.lib	- (32位/MBCS/DeBug)
+		 3. x86/static/HPSocket_U.lib	- (32位/UNICODE/Release)
+		 4. x86/static/HPSocket_UD.lib	- (32位/UNICODE/DeBug)
+		 5. x64/static/HPSocket.lib		- (64位/MBCS/Release)
+		 6. x64/static/HPSocket_D.lib	- (64位/MBCS/DeBug)
+		 7. x64/static/HPSocket_U.lib	- (64位/UNICODE/Release)
+		 8. x64/static/HPSocket_UD.lib	- (64位/UNICODE/DeBug)
 
-******************************************************************************/
+ ******************************************************************************/
 
 #pragma once
 
 #include "SocketInterface.h"
 
-/*****************************************************************************************************************************************************/
-/****************************************************************** TCP/UDP Exports ******************************************************************/
-/*****************************************************************************************************************************************************/
+ /*****************************************************************************************************************************************************/
+ /****************************************************************** TCP/UDP Exports ******************************************************************/
+ /*****************************************************************************************************************************************************/
 
-/**************************************************/
-/************** HPSocket 对象智能指针 **************/
+ /**************************************************/
+ /************** HPSocket 对象智能指针 **************/
 
 template<class T, class _Listener, class _Creator> class CHPObjectPtr
 {
 public:
 	CHPObjectPtr& Reset(T* pObj = nullptr)
 	{
-		if(pObj != m_pObj)
+		if (pObj != m_pObj)
 		{
-			if(m_pObj)
+			if (m_pObj)
 				_Creator::Destroy(m_pObj);
 
 			m_pObj = pObj;
@@ -94,18 +94,18 @@ public:
 
 	T* Detach()
 	{
-		T* pObj	= m_pObj;
-		m_pObj	= nullptr;
+		T* pObj = m_pObj;
+		m_pObj = nullptr;
 
 		return pObj;
 	}
 
-	BOOL IsValid	()	const	{return m_pObj != nullptr	;}
-	T* Get			()	const	{return m_pObj				;}
-	T* operator ->	()	const	{return m_pObj				;}
-	operator T*		()	const	{return m_pObj				;}
+	BOOL IsValid()	const { return m_pObj != nullptr; }
+	T* Get()	const { return m_pObj; }
+	T* operator ->	()	const { return m_pObj; }
+	operator T* ()	const { return m_pObj; }
 
-	CHPObjectPtr& operator = (T* pObj)	{return Reset(pObj)	;}
+	CHPObjectPtr& operator = (T* pObj) { return Reset(pObj); }
 
 public:
 	CHPObjectPtr(_Listener* pListener = nullptr)
@@ -458,7 +458,7 @@ HPSOCKET_API DWORD HP_GetHPSocketVersion();
 // 获取错误描述文本
 HPSOCKET_API LPCTSTR HP_GetSocketErrorDesc(EnSocketError enCode);
 // 调用系统的 GetLastError() 方法获取系统错误代码
-HPSOCKET_API DWORD SYS_GetLastError	();
+HPSOCKET_API DWORD SYS_GetLastError();
 // 调用系统的 WSAGetLastError() 方法获取系统错误代码
 HPSOCKET_API int SYS_WSAGetLastError();
 // 调用系统的 setsockopt()
@@ -756,7 +756,7 @@ HPSOCKET_API void HP_Destroy_ThreadPool(IHPThreadPool* pThreadPool);
 /*
 * 名称：创建 TSocketTask 对象
 * 描述：创建任务对象，该对象最终需由 HP_Destroy_SocketTaskObj() 销毁
-*		
+*
 * 参数：		fnTaskProc	-- 任务处理函数
 *			pSender		-- 发起对象
 *			dwConnID	-- 连接 ID
@@ -825,3 +825,5 @@ HPSOCKET_API IHPCompressor* HP_Create_BrotliCompressor(Fn_CompressDataCallback f
 HPSOCKET_API IHPDecompressor* HP_Create_BrotliDecompressor(Fn_DecompressDataCallback fnCallback, DWORD dwBuffSize = 16 * 1024);
 
 #endif
+
+
