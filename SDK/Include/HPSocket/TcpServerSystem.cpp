@@ -37,15 +37,6 @@ bool TcpServerSystem::Send(HP_CONNID connId, const BYTE* data, int length)
     return m_server->Send(connId, data, length);
 }
 
-bool TcpServerSystem::Disconnect(HP_CONNID connId)
-{
-    if (!m_server->HasStarted()) {
-        return false;
-    }
-
-    return m_server->Disconnect(connId);
-}
-
 uint32_t TcpServerSystem::GetConnectionCount() const
 {
     return m_server->GetConnectionCount();

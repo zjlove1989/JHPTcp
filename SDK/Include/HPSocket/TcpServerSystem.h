@@ -26,9 +26,6 @@ public:
 	// 发送数据
 	bool Send(HP_CONNID connId, const BYTE* data, int length);
 
-	// 断开指定连接
-	bool Disconnect(HP_CONNID connId);
-
 	// 获取当前连接数
 	uint32_t GetConnectionCount() const;
 
