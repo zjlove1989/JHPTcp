@@ -7,44 +7,11 @@
 #include "JHPTcpClient.h"
 #include "JHPTcpClientDlg.h"
 #include "afxdialogex.h"
+#include "JHPTcpClientArchitecture.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-
-// 用于应用程序“关于”菜单项的 CAboutDlg 对话框
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// 对话框数据
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ABOUTBOX };
-#endif
-
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-
-// 实现
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
 
 // CJHPTcpClientDlg 对话框
 
@@ -56,9 +23,19 @@ CJHPTcpClientDlg::CJHPTcpClientDlg(CWnd* pParent /*=nullptr*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
+std::weak_ptr<JFramework::IArchitecture> CJHPTcpClientDlg::GetArchitecture() const
+{
+	return JHPTcpClientArchitecture::Instance();
+}
+
 void CJHPTcpClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+}
+
+void CJHPTcpClientDlg::OnEvent(std::shared_ptr<IEvent> event)
+{
+
 }
 
 BEGIN_MESSAGE_MAP(CJHPTcpClientDlg, CDialogEx)
@@ -106,15 +83,7 @@ BOOL CJHPTcpClientDlg::OnInitDialog()
 
 void CJHPTcpClientDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
-	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
-	{
-		CAboutDlg dlgAbout;
-		dlgAbout.DoModal();
-	}
-	else
-	{
-		CDialogEx::OnSysCommand(nID, lParam);
-	}
+	CDialogEx::OnSysCommand(nID, lParam);
 }
 
 // 如果向对话框添加最小化按钮，则需要下面的代码
