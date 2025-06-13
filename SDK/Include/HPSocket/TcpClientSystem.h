@@ -50,11 +50,12 @@ public:
 
 	EnHandleResult OnHandShake(ITcpClient* pSender, CONNID dwConnID) override;
 
-
-	EnHandleResult OnReceive(ITcpClient* pSender, CONNID dwConnID, int iLength) override;
-
+	EnHandleResult OnReceive(ITcpClient* pSender, CONNID dwConnID, const BYTE* pData, int iLength) override;
 
 	EnHandleResult OnSend(ITcpClient* pSender, CONNID dwConnID, const BYTE* pData, int iLength) override;
+
+
+	EnHandleResult OnClose(ITcpClient* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode) override;
 
 private:
 	CTcpPackClientPtr m_client;          // HPSocket TCP客户端对象

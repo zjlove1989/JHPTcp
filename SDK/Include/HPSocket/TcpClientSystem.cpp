@@ -1,6 +1,5 @@
-#include "HPTcpClient.h"
-#include "../../Text.h"
-
+#include "TcpClientSystem.h"
+#include "HPClientEvent.h"
 TcpClientSystem::TcpClientSystem()
 	: m_client(this)
 {
@@ -40,29 +39,40 @@ bool TcpClientSystem::SendString(const std::string& str)
 	return false;
 }
 
-EnHandleResult TcpClientSystem::OnReceive(ITcpClient* pSender, CONNID dwConnID, int iLength)
+EnHandleResult TcpClientSystem::OnReceive(ITcpClient* pSender, CONNID dwConnID, const BYTE* pData, int iLength)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	this->SendEvent<HPClientReceiveEvent>(pSender, dwConnID, pData, iLength);
+	return HR_OK;
 }
 
 EnHandleResult TcpClientSystem::OnSend(ITcpClient* pSender, CONNID dwConnID, const BYTE* pData, int iLength)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	this->SendEvent<HPClientSendEvent>(pSender, dwConnID, pData, iLength);
+	return HR_OK;
+}
+
+EnHandleResult TcpClientSystem::OnClose(ITcpClient* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode)
+{
+	this->SendEvent<HPClientCloseEvent>(pSender, dwConnID, enOperation, iErrorCode);
+	return HR_OK;
 }
 
 EnHandleResult TcpClientSystem::OnPrepareConnect(ITcpClient* pSender, CONNID dwConnID, SOCKET socket)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	this->SendEvent<HPClientPrepareConnectEvent>(pSender, dwConnID, socket);
+	return HR_OK;
 }
 
 EnHandleResult TcpClientSystem::OnConnect(ITcpClient* pSender, CONNID dwConnID)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	this->SendEvent<HPClientConnectEvent>(pSender, dwConnID);
+	return HR_OK;
 }
 
 EnHandleResult TcpClientSystem::OnHandShake(ITcpClient* pSender, CONNID dwConnID)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	this->SendEvent<HPClientHandShakeEvent>(pSender, dwConnID);
+	return HR_OK;
 }
 
 void TcpClientSystem::OnInit()

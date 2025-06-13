@@ -191,20 +191,23 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\SDK\Include\HPSocket\HPClientEvent.h" />
     <ClInclude Include="..\SDK\Include\HPSocket\HPSocket.h" />
-    <ClInclude Include="..\SDK\Include\HPSocket\HPTcpClient.h" />
     <ClInclude Include="..\SDK\Include\HPSocket\HPTypeDef.h" />
     <ClInclude Include="..\SDK\Include\HPSocket\SocketInterface.h" />
+    <ClInclude Include="..\SDK\Include\HPSocket\TcpClientSystem.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="JHPTcpClient.h" />
+    <ClInclude Include="JHPTcpClientArchitecture.h" />
     <ClInclude Include="JHPTcpClientDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\SDK\Include\HPSocket\HPTcpClient.cpp" />
+    <ClCompile Include="..\SDK\Include\HPSocket\TcpClientSystem.cpp" />
     <ClCompile Include="JHPTcpClient.cpp" />
+    <ClCompile Include="JHPTcpClientArchitecture.cpp" />
     <ClCompile Include="JHPTcpClientDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
