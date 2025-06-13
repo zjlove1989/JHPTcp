@@ -1,6 +1,5 @@
 #include "TcpServerSystem.h"
-
-#include "../SDK/Include/HPSocket/HPServerEvent.h"
+#include "HPServerEvent.h"
 
 TcpServerSystem::TcpServerSystem()
     : mServer(this)

@@ -4,13 +4,13 @@
 #include "JHPTcpServerDlg.h"
 #include "JHPTcpServer.h"
 #include "JHPTcpServerArchitecture.h"
-#include "TcpServerSystem.h"
 #include "afxdialogex.h"
 #include "framework.h"
 #include "pch.h"
 #include "../SDK/Text.h"
 #include "../SDK/Include/HPSocket/HPServerEvent.h"
 #include "../SDK/helper.h"
+#include "../SDK/Include/HPSocket/TcpServerSystem.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

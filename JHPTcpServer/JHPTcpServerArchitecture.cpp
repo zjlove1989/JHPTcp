@@ -1,5 +1,5 @@
 #include "JHPTcpServerArchitecture.h"
-#include "TcpServerSystem.h"
+#include "../SDK/Include/HPSocket/TcpServerSystem.h"
 
 std::shared_ptr<JHPTcpServerArchitecture> JHPTcpServerArchitecture::instance = nullptr;
 std::mutex JHPTcpServerArchitecture::mutex;

@@ -1,8 +1,7 @@
 #pragma once
-#include "../SDK/Include/HPSocket/SocketInterface.h"
-#include "../SDK/Include/HPSocket/HPSocket.h"
-#include "../SDK/Include/HPSocket/HPTypeDef.h"
-#include "../SDK/JFramework.h"
+#include "../../JFramework.h"
+#include "SocketInterface.h"
+#include "HPSocket.h"
 
 
 using namespace JFramework;

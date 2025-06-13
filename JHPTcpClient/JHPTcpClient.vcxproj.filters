@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="SDK">
+      <UniqueIdentifier>{c66e6b73-bd6b-412b-86d6-08bf136533cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JHPTcpClient.h">
@@ -33,6 +36,18 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\SDK\Include\HPSocket\HPTcpClient.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SDK\Include\HPSocket\HPSocket.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SDK\Include\HPSocket\HPTypeDef.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SDK\Include\HPSocket\SocketInterface.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JHPTcpClient.cpp">
@@ -43,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SDK\Include\HPSocket\HPTcpClient.cpp">
+      <Filter>SDK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

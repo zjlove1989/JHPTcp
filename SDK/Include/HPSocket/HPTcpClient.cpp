@@ -1,92 +1,78 @@
 #include "HPTcpClient.h"
 #include "../../Text.h"
 
-// HPTcpClient й╣ож
-HPTcpClient::HPTcpClient()
+TcpClientSystem::TcpClientSystem()
 	: m_client(this)
-	, m_remotePort(0)
-	, m_async(true)
-	, m_connId(0)
 {
 }
 
-HPTcpClient::~HPTcpClient()
+TcpClientSystem::~TcpClientSystem()
 {
-	Stop();
 }
 
-bool HPTcpClient::Initialize(const std::string& remoteIp, uint16_t remotePort, bool async)
+bool TcpClientSystem::Start(const wchar_t* bindAddress, uint16_t port)
 {
-	m_remoteIp = remoteIp;
-	m_remotePort = remotePort;
-	m_async = async;
+	return m_client->Start(bindAddress, port);
+}
+
+bool TcpClientSystem::Stop()
+{
+	if (m_client && m_client->HasStarted()) {
+		return m_client->Stop();
+	}
 
 	return true;
 }
 
-
-EnHandleResult HPTcpClient::OnConnect(ITcpClient* pSender, CONNID dwConnID)
+bool TcpClientSystem::Send(const BYTE* data, int length)
 {
-	if (m_onConnect) {
-		m_onConnect(dwConnID);
-	}
-	return HR_OK;
-}
-
-EnHandleResult HPTcpClient::OnReceive(ITcpClient* pSender, CONNID dwConnID, const BYTE* pData, int iLength)
-{
-	if (m_onReceive) {
-		m_onReceive(dwConnID, pData, iLength);
-	}
-	return HR_OK;
-}
-
-EnHandleResult HPTcpClient::OnClose(ITcpClient* pSender, CONNID dwConnID, EnSocketOperation enOperation, int iErrorCode)
-{
-	if (m_onClose) {
-		m_onClose(dwConnID);
-	}
-	return HR_OK;
-}
-
-bool HPTcpClient::Start()
-{
-	if (!m_client) {
-		return false;
-	}
-
-
-	if (!m_client->Start(Text::text_to_wstr(m_remoteIp).c_str(), m_remotePort, m_async)) {
-		return false;
-	}
-
-	m_connId = m_client->GetConnectionID();
-	return true;
-}
-
-bool HPTcpClient::Stop()
-{
-	if (m_client && m_client->Stop()) {
-		return true;
+	if (m_client && m_client->HasStarted()) {
+		return m_client->Send(data, length);
 	}
 	return false;
 }
 
-bool HPTcpClient::Send(const BYTE* data, int length)
+bool TcpClientSystem::SendString(const std::string& str)
 {
-	if (!m_client || !IsConnected()) {
-		return false;
+	if (m_client && m_client->HasStarted()) {
+		return Send(reinterpret_cast<const BYTE*>(str.c_str()), static_cast<int>(str.length()));
 	}
-
-	return m_client->Send(data, length);
+	return false;
 }
 
-bool HPTcpClient::SendString(const std::string& str)
+EnHandleResult TcpClientSystem::OnReceive(ITcpClient* pSender, CONNID dwConnID, int iLength)
 {
-	return Send(reinterpret_cast<const BYTE*>(str.c_str()), static_cast<int>(str.length()));
+	throw std::logic_error("The method or operation is not implemented.");
 }
 
-bool HPTcpClient::IsConnected() const
+EnHandleResult TcpClientSystem::OnSend(ITcpClient* pSender, CONNID dwConnID, const BYTE* pData, int iLength)
 {
-	return m_client && m_client->IsConnected();
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+EnHandleResult TcpClientSystem::OnPrepareConnect(ITcpClient* pSender, CONNID dwConnID, SOCKET socket)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+EnHandleResult TcpClientSystem::OnConnect(ITcpClient* pSender, CONNID dwConnID)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+EnHandleResult TcpClientSystem::OnHandShake(ITcpClient* pSender, CONNID dwConnID)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void TcpClientSystem::OnInit()
+{
+}
+
+void TcpClientSystem::OnDeinit()
+{
+}
+
+void TcpClientSystem::OnEvent(std::shared_ptr<IEvent> event)
+{
 }

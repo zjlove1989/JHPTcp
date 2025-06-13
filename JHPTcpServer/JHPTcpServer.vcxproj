@@ -88,14 +88,16 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;HPSOCKET_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>..\SDK\Lib\HPSocket\x64\static</AdditionalLibraryDirectories>
+      <AdditionalDependencies>HPSocket_UD.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -163,18 +165,20 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;HPSOCKET_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\SDK\Lib\HPSocket\x64\static</AdditionalLibraryDirectories>
+      <AdditionalDependencies>HPSocket_U.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -194,6 +198,7 @@
     <ClInclude Include="..\SDK\Include\HPSocket\HPSocket.h" />
     <ClInclude Include="..\SDK\Include\HPSocket\HPTypeDef.h" />
     <ClInclude Include="..\SDK\Include\HPSocket\SocketInterface.h" />
+    <ClInclude Include="..\SDK\Include\HPSocket\TcpServerSystem.h" />
     <ClInclude Include="..\SDK\JFramework.h" />
     <ClInclude Include="..\SDK\Text.h" />
     <ClInclude Include="framework.h" />
@@ -203,11 +208,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TcpServerSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\SDK\BufferPtr.cpp" />
     <ClCompile Include="..\SDK\helper.cpp" />
+    <ClCompile Include="..\SDK\Include\HPSocket\TcpServerSystem.cpp" />
     <ClCompile Include="..\SDK\Text.cpp" />
     <ClCompile Include="JHPTcpServer.cpp" />
     <ClCompile Include="JHPTcpServerArchitecture.cpp" />
@@ -218,7 +223,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TcpServerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="JHPTcpServer.rc" />
